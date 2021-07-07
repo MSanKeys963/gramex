@@ -1,7 +1,4 @@
-// Uses: Bootstrap 4.6.0
-// Change above line when changing Bootstrap version (to bust gramex.cache)
-
-@import "bootstrap";
+@import "node_modules/bootstrap5/scss/bootstrap";
 
 // opacity-30 to primary-lighten-8
 $opacity-values: (
@@ -21,20 +18,20 @@ $opacity-values: (
   }
 }
 
-// .modal-left - modal as overlay panel, left and right
+// .modal-start - modal as overlay panel, left and right
 // --------------------------------------------------------------------------
-.modal-left .modal-dialog, .modal-right .modal-dialog {
+.modal-start .modal-dialog, .modal-end .modal-dialog {
   position: fixed;
   margin: auto;
   height: 100%;
 }
-.modal-left .modal-dialog {
+.modal-start .modal-dialog {
   left: 0;
 }
-.modal-right .modal-dialog {
+.modal-end .modal-dialog {
   right: 0;
 }
-.modal-left .modal-content, .modal-right .modal-content {
+.modal-start .modal-content, .modal-end .modal-content {
   height: 100%;
   overflow-y: auto;
   border: none;
@@ -65,7 +62,7 @@ $font-sizes: (
 );
 
 // .btn-xs: extra small button
-// BS4 supports .btn-lg, .btn-sm
+// BS5 supports .btn-lg, .btn-sm
 // --------------------------------------------------------------------------
 $input-btn-padding-y-xs:      .125rem !default;
 $input-btn-padding-x-xs:      .25rem !default;
@@ -73,16 +70,12 @@ $input-btn-line-height-xs:    $line-height-sm !default;
 $font-size-xs:                ($font-size-base * .75) !default;
 $btn-border-radius-xs:        0.2rem !default;
 .btn-xs {
-  @include button-size($input-btn-padding-y-xs, $input-btn-padding-x-xs, $font-size-xs, $input-btn-line-height-xs, $btn-border-radius-xs);
+  @include button-size($input-btn-padding-y-xs, $input-btn-padding-x-xs, $font-size-xs, $btn-border-radius-xs);
 }
 
 // Border utilities
 // --------------------------------------------------------------------------
 .border-2 { border-width: $border-width * 2 !important; }
-.border-top-1 { border-top-width: $border-width !important; }
-.border-right-1 { border-right-width: $border-width !important; }
-.border-left-1 { border-left-width: $border-width !important; }
-.border-bottom-1 { border-bottom-width: $border-width !important; }
 
 // Border radius utilities
 // --------------------------------------------------------------------------
@@ -108,68 +101,6 @@ $round-radius: 99rem !default;    // Large enough a value for most components
 .round,
 .nav-link.round {
   border-radius: $round-radius;
-}
-// .switch: switch button utility
-// --------------------------------------------------------------------------
-$switch-width: 32px !default;
-$switch-height: $font-size-base !default;
-$switch-control-size: $switch-width/3 !default;
-$switch-control-color: $light !default;
-$switch-colors: (
-  success: $success,
-  warning: $warning,
-  danger: $danger,
-  primary: $primary,
-  info: $info,
-  dark: $dark,
-  secondary: $secondary,
-);
-@each $class, $val in $switch-colors {
-  .switch-#{$class} {
-    display: inline-block;
-    vertical-align: middle;
-    width: $switch-width;
-    height: $switch-height;
-  }
-  .switch-#{$class}>input {
-    position: absolute;
-    overflow: hidden;
-    width: 0;
-  }
-  .switch-#{$class}>label {
-    cursor: pointer;
-    position: relative;
-    display: block;
-    margin: 0;
-    border-radius: inherit;
-    height: 100%;
-  }
-  .switch-#{$class}>label:before {
-    background: $custom-control-label-disabled-color;
-    border-radius: inherit;
-    content: '';
-    display: block;
-    height: 100%;
-    transition: .1s left ease-out;
-  }
-  .switch-#{$class}>input:checked+label:before {
-    background: $val;
-  }
-  .switch-#{$class}>label:after {
-    background: $switch-control-color;
-    mix-blend-mode: hard-light;
-    border-radius: 99rem;
-    content: '';
-    height: $switch-control-size;
-    width: $switch-control-size;
-    position: absolute;
-    top: calc(#{$switch-height / 2} - #{$switch-control-size / 2});   // Vertically center control
-    left: calc(#{$switch-height / 2} - #{$switch-control-size / 2});
-    transition: .1s left ease-out;
-  }
-  .switch-#{$class}>input:checked+label:after {
-    left: calc(100% - #{$switch-height / 2} - #{$switch-control-size / 2});   // Move switch to right
-  }
 }
 
 // .shadow: shadow utilities
@@ -226,20 +157,6 @@ $line-height-4: 2.0 !default;
 .lh-3 { line-height: $line-height-3; }
 .lh-4 { line-height: $line-height-4; }
 
-
-// .underline: underlined inputs
-// --------------------------------------------------------------------------
-.underline {
-  border-radius: 0;
-  border-bottom: $hr-border-width solid $hr-border-color;
-  border-left: 0;
-  border-right: 0;
-  border-top: 0;
-}
-.form-control.underline:focus {
-  box-shadow: none;
-  border-bottom-width: $hr-border-width * 2;
-}
 
 // Small fonts
 // --------------------------------------------------------------------------
@@ -315,6 +232,8 @@ $small-font-sizes: (
 
 // .divider
 // --------------------------------------------------------------------------
+$hr-border-width: $border-width !default;
+$hr-border-color: rgba($black, .1) !default;
 .divider {
   display: flex;
   white-space: nowrap;
@@ -420,13 +339,6 @@ $tail-size: 15px !default;
 
 // .arrow-{color}: arrow components
 // --------------------------------------------------------------------------
-$display-sizes: (
-  display-1: $display1-size,
-  display-2: $display2-size,
-  display-3: $display3-size,
-  display-4: $display4-size
-);
-
 $arrow-padding-y: 1rem !default;
 $arrow-height: $font-size-base + $arrow-padding-y;
 @each $color, $value in map_merge($theme-colors, (transparent: transparent)) {
@@ -466,7 +378,7 @@ $arrow-height: $font-size-base + $arrow-padding-y;
       right: $arrow-height / -2;
     }
   }
-  @each $size, $height in $display-sizes {
+  @each $size, $height in $display-font-sizes {
     $arrow-height: $height + $arrow-padding-y;
     .#{$size}.arrow-#{$color} {
       height: $arrow-height;
@@ -501,94 +413,6 @@ $arrow-height: $font-size-base + $arrow-padding-y;
 }
 .arrow-transparent {
   color: inherit;
-}
-
-// .slider: input slider
-// --------------------------------------------------------------------------
-// Note: Bootstrap 4.2 has custom-range. .slider is deprecated.
-$track-height: 0.4rem;
-.slider {
-  -webkit-appearance: none;     // Required for any custom styling
-  background: transparent;      // Chrome has a non-transparent background
-  border: none;                 // Override default
-  box-shadow: none;             // Override .form-control
-  cursor: pointer;
-  padding-left: 0;
-  padding-right: 0;
-
-  &::-webkit-slider-runnable-track {
-    height: $track-height;
-    @include border-radius($input-border-radius);
-    @include button-variant($gray-300, $gray-300);
-    @if $enable-shadows {
-      box-shadow: $btn-active-box-shadow;
-    }
-  }
-  &::-moz-range-track {
-    height: $track-height;
-    @include border-radius($input-border-radius);
-    @include button-variant($gray-300, $gray-300);
-    @if $enable-shadows {
-      box-shadow: $btn-active-box-shadow;
-    }
-  }
-  &::-ms-track {
-    height: $custom-control-indicator-size;
-    background-color: transparent;
-    border-color: transparent;
-    color: transparent;
-  }
-  &::-ms-fill-upper, &::-ms-fill-lower {
-    box-sizing: border-box;
-    height: $track-height;
-    @include border-radius($input-border-radius);
-    @include button-variant($gray-300, $gray-300);
-    @if $enable-shadows {
-      box-shadow: $btn-active-box-shadow;
-    }
-  }
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    @include button-variant($primary, $primary);
-    @include border-radius($input-border-radius);
-    margin-top: ($custom-control-indicator-size - $track-height) / -2;
-    height: $custom-control-indicator-size;
-    width: $custom-control-indicator-size;
-  }
-  &::-moz-range-thumb {
-    @include button-variant($primary, $primary);
-    @include border-radius($input-border-radius);
-    margin-top: ($custom-control-indicator-size - $track-height) / -2;
-    height: $custom-control-indicator-size;
-    width: $custom-control-indicator-size;
-  }
-  &::-ms-thumb {
-    box-sizing: border-box; // IE11 sizing
-    margin-top: 0; // Edge vertical alignment
-    @include button-variant($primary, $primary);
-    @include border-radius($input-border-radius);
-    height: $custom-control-indicator-size;
-    width: $custom-control-indicator-size;
-  }
-
-  // Enable shadows on thumb, not main control
-  &.shadow { box-shadow: none; }
-  &.shadow::-webkit-slider-thumb { box-shadow: $shadow; }
-  &.shadow::-moz-range-thumb { box-shadow: $shadow; }
-  &.shadow::-ms-thumb { box-shadow: $shadow; }
-  &.shadow::-webkit-slider-runnable-track { box-shadow: $btn-active-box-shadow; }
-  &.shadow::-moz-range-track { box-shadow: $btn-active-box-shadow; }
-  &.shadow::-ms-track { margin-bottom: $shadow-y + $shadow-blur; }
-  &.shadow::-ms-fill-upper, &.shadow::-ms-fill-lower { box-shadow: $btn-active-box-shadow; }
-
-  // Enable round on elements, not main control
-  &.round { border-radius: 3px; }
-  &.round::-webkit-slider-thumb { border-radius: $round-radius; }
-  &.round::-moz-range-thumb { border-radius: $round-radius; }
-  &.round::-ms-thumb { border-radius: $round-radius; }
-  &.round::-webkit-slider-runnable-track { border-radius: $round-radius; }
-  &.round::-moz-range-track { border-radius: $round-radius; }
-  &.round::-ms-track { border-radius: $round-radius; }
 }
 
 // .bg-*: background utilities
