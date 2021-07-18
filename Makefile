@@ -48,7 +48,7 @@ lint:
 	command -v yarn >/dev/null 2>&1 || npm install -g yarn
 	command -v eclint 2>/dev/null 2>&1 || yarn global add eclint eslint htmllint-cli
 	# eclint check files, ignoring node_modules
-	find . -type f \( -name "*.html" -o -name "*.js" -o -name "*.css" -o -name "*.yaml" -o -name "*.md" \) ! -path '*/node_modules/*' ! -path '*/_build/*' ! -path '*/htmlcov/*' ! -path '*/.eggs/*' -print0 | xargs -0 eclint check
+	find . -type f \( -name "*.html" -o -name "*.js" -o -name "*.css" -o -name "*.yaml" -o -name "*.md" \) ! -path '*/node_modules/*' ! -path '*/_build/*' ! -path '*/htmlcov/*' ! -path '*/.eggs/*' ! -path '*/pkg/conda/*' -print0 | xargs -0 eclint check
 	# eslint requires eslint-plugin-* which are in package.json. yarn install them first
 	yarn install
 	eslint --ext js,html gramex/apps
@@ -58,7 +58,7 @@ lint:
 	command -v flake8 2>/dev/null 2>&1 || $(PYTHON) -m pip install flake8 pep8-naming flake8-gramex flake8-blind-except flake8-print flake8-debugger
 	flake8 gramex testlib tests
 	command -v bandit 2>/dev/null 2>&1 || $(PYTHON) -m pip install bandit
-	bandit gramex --recursive --format csv || true    # Just run bandit as a warning
+	bandit gramex --recursive --exclude '*/node_modules/*' --format csv || true    # Just run bandit as a warning
 
 test-setup:
 	$(PYTHON) -m pip install -r tests/requirements.txt

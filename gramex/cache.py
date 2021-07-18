@@ -13,7 +13,6 @@ import mimetypes
 import subprocess       # nosec
 import pandas as pd
 import tornado.template
-from lxml import etree
 from threading import Thread
 from queue import Queue
 from orderedattrdict import AttrDict
@@ -121,7 +120,7 @@ def _markdown(handle, **kwargs):
 @opener
 def _yaml(handle, **kwargs):
     import yaml
-    defaults = {'Loader': yaml.FullLoader}
+    defaults = {'Loader': yaml.SafeLoader}
     return yaml.load(handle.read(), **{k: kwargs.pop(k, v) for k, v in defaults.items()})
 
 
@@ -235,10 +234,6 @@ open_callback = dict(
     markdown=_markdown,
     tmpl=_template,
     template=_template,
-    xml=etree.parse,
-    svg=etree.parse,
-    rss=etree.parse,
-    atom=etree.parse,
     config=PathConfig,
     yml=_yaml,
     yaml=_yaml
@@ -268,7 +263,6 @@ def open(path, callback=None, transform=None, rel=False, **kwargs):
     - ``markdown`` or ``md``: reads files using markdown.markdown via io.open
     - ``csv``, ``excel``, ``xls``, ``xlsx``, ``hdf``, ``h5``, ``html``, ``sas``,
       ``stata``, ``table``, ``parquet``, ``feather``: reads using Pandas
-    - ``xml``, ``svg``, ``rss``, ``atom``: reads using lxml.etree
 
     For example::
 
@@ -789,8 +783,6 @@ class Subprocess(object):
 
 _daemons = {}
 _regex_type = type(re.compile(''))
-# Python 3 needs sys.stderr.buffer.write for writing binary strings
-_stderr_write = sys.stderr.buffer.write if hasattr(sys.stderr, 'buffer') else sys.stderr.write
 
 
 def daemon(args, restart=1, first_line=None, stream=True, timeout=5, buffer_size='line', **kwargs):
@@ -821,7 +813,7 @@ def daemon(args, restart=1, first_line=None, stream=True, timeout=5, buffer_size
         if first_line:
             kwargs[channel].append(queue.put)
         if stream is True:
-            kwargs[channel].append(_stderr_write)
+            kwargs[channel].append(sys.stderr.buffer.write)
         elif callable(stream):
             kwargs[channel].append(stream)
     # Buffer by line by default. This is required for the first_line check, not otherwise.
